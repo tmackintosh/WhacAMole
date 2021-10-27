@@ -4,12 +4,13 @@ int playerOneButton = 2;
 int whiteLED = 9;
 
 // declare variables
-int delayTime; // time delay between lights on/off
+int delayTime = 1000; // time delay between lights on/off
 int randNumber;
 int whiteLEDOn; 
 
 //setup interrupt, button input and LED outputs
 void setup() {
+  Serial.begin(9600);
   attachInterrupt(0, playerOneInput, FALLING); // specify interrupt routine
   for (int i=0; i<3; i++){
     pinMode(ledPin[i], OUTPUT);
@@ -31,8 +32,11 @@ void loop() {
   }  //if whiteLED on = turn it off
 }
 
+int count = 0;
 
 void playerOneInput() {
+  count += 1;
+  Serial.println(count);
   digitalWrite(whiteLED, HIGH); 
   /*change this code so that white LED only switches on when button is pressed 
   at the right time*/
