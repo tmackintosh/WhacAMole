@@ -14,8 +14,11 @@ int score = 0;
 
 //setup interrupt, button input and LED outputs
 void setup() {
+  // Use entropy to provide a random seed
+  randomSeed(analogRead(A3));
+  
   Serial.begin(9600);
-  attachInterrupt(0, playerOneInput, FALLING); // specify interrupt routine
+  attachInterrupt(digitalPinToInterrupt(playerOneButton), playerOneInput, FALLING); // specify interrupt routine
   for (int i=0; i<3; i++){
     pinMode(ledPin[i], OUTPUT);
   }
@@ -49,10 +52,7 @@ void loop() {
     
     delay(delayTime);
   
-    whiteLEDOn = digitalRead(whiteLED);
-    if(whiteLEDOn=HIGH){
-      digitalWrite(whiteLED, LOW);
-    }  //if whiteLED on = turn it off
+    digitalWrite(whiteLED, LOW);
   }
 
   for (int i = 0; i < 3; i++) {
@@ -64,6 +64,8 @@ void loop() {
   for (int i = 0; i < 3; i++) {
     digitalWrite(ledPin[i], LOW);
   }
+
+  delay(1000);
 }
 
 void playerOneInput() {
