@@ -3,6 +3,7 @@ int ledPinPlayer1[] = {4,5,6};
 int ledPinPlayer2[] = {10, 11, 12};
 
 int playerOneButton = 2;
+int playerTwoButton = 3;
 int whiteLEDPlayer1 = 7;
 int whiteLEDPlayer2 = 13;
 
@@ -27,7 +28,8 @@ void setup() {
   randomSeed(analogRead(A3));
   
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(playerOneButton), playerOneInput, FALLING); // specify interrupt routine
+  attachInterrupt(0, playerOneInput, FALLING); // specify interrupt routine
+  attachInterrupt(1, playerTwoInput, FALLING);
   for (int i=0; i<3; i++){
     pinMode(ledPinPlayer1[i], OUTPUT);
   }
@@ -53,13 +55,15 @@ void loop() {
 
     digitalWrite(ledPinPlayer1[randNumberPlayer1], LOW);
     digitalWrite(ledPinPlayer2[randNumberPlayer2], LOW);
-  
+
+    // When the lights change to another value, check whether the player had pressed the button
+    // in that time. If they did, they scored a point.
     if (wasIncreasedPlayer1 == true) {
       scorePlayer1 += 1;
       
       Serial.println("Player 1 Scored");
 
-      if (scorePlayer1 == 1) {
+      if (scorePlayer1 == 3) {
         Serial.println("Player 1 wins!");
         player1Complete = true;
       }
@@ -70,7 +74,7 @@ void loop() {
 
       Serial.print("Player 2 Scored");
 
-      if (scorePlayer2 == 1) {
+      if (scorePlayer2 == 3) {
         Serial.println("Player 2 wins!");
         player2Complete = true;
       }
@@ -86,13 +90,22 @@ void loop() {
   }
 
   for (int i = 0; i < 3; i++) {
-    digitalWrite(ledPinPlayer1[i], HIGH);
+    // Conditional statements are independent so that players
+    // have the ability to draw the game
+    if (player1Complete == true) {
+      digitalWrite(ledPinPlayer1[i], HIGH);
+    }
+
+    if (player2Complete == true) {
+      digitalWrite(ledPinPlayer2[i], HIGH);
+    }
   }
 
   delay(1000);
 
   for (int i = 0; i < 3; i++) {
     digitalWrite(ledPinPlayer1[i], LOW);
+    digitalWrite(ledPinPlayer2[i], LOW);
   }
 
   delay(1000);
@@ -100,16 +113,20 @@ void loop() {
 
 void playerOneInput() {
   Serial.println("Button pressed");
-   
+
+  // Variables will always be set to the currently lit LED, therefore we are able
+  // to check whether or not the player hit, or whether or not the player missed
   if (randNumberPlayer1 == 1) {
     wasIncreasedPlayer1 = true;
     digitalWrite(whiteLEDPlayer1, HIGH);
   }
+  /*change this code so that white LED only switches on when button is pressed 
+  at the right time*/
+}
 
+void playerTwoInput() {
   if (randNumberPlayer2 == 1) {
     wasIncreasedPlayer2 = true;
     digitalWrite(whiteLEDPlayer2, HIGH);
   }
-  /*change this code so that white LED only switches on when button is pressed 
-  at the right time*/
 }
