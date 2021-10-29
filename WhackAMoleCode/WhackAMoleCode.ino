@@ -7,6 +7,8 @@ int playerTwoButton = 3;
 int whiteLEDPlayer1 = 7;
 int whiteLEDPlayer2 = 13;
 
+int servoPlayer1 = 8;
+
 // declare variables
 int delayTime = 1000; // time delay between lights on/off
 int randNumberPlayer1;
@@ -38,8 +40,11 @@ void setup() {
   }
   
   pinMode(playerOneButton, INPUT);
+  pinMode(playerTwoButton, INPUT);
   pinMode(whiteLEDPlayer1, OUTPUT);
   pinMode(whiteLEDPlayer2, OUTPUT);
+
+  pinMode(servoPlayer1, OUTPUT);
 }
 
 //run main program loop
@@ -56,6 +61,8 @@ void loop() {
     digitalWrite(ledPinPlayer1[randNumberPlayer1], LOW);
     digitalWrite(ledPinPlayer2[randNumberPlayer2], LOW);
 
+    digitalWrite(servoPlayer1, LOW);
+
     // When the lights change to another value, check whether the player had pressed the button
     // in that time. If they did, they scored a point.
     if (wasIncreasedPlayer1 == true) {
@@ -71,6 +78,7 @@ void loop() {
 
     if (wasIncreasedPlayer2 == true) {
       scorePlayer2 += 1;
+      digitalWrite(servoPlayer1, HIGH);
 
       Serial.print("Player 2 Scored");
 
