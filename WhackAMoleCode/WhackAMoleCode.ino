@@ -1,3 +1,7 @@
+#include <Servo.h>;
+
+Servo myServo;
+
 // assign LEDs and button to pins
 int ledPinPlayer1[] = {4,5,6};
 int ledPinPlayer2[] = {10, 11, 12};
@@ -21,11 +25,14 @@ bool player2Complete = false;
 int scorePlayer1 = 0;
 int scorePlayer2 = 0;
 
+int angle;
+
 //setup interrupt, button input and LED outputs
 void setup() {
   // Use entropy to provide a random seed
   randomSeed(analogRead(A3));
-  
+
+  myServo.attach(8);
   Serial.begin(9600);
   attachInterrupt(digitalPinToInterrupt(playerOneButton), playerOneInput, FALLING); // specify interrupt routine
   for (int i=0; i<3; i++){
@@ -78,6 +85,10 @@ void loop() {
 
     wasIncreasedPlayer1 = false;
     wasIncreasedPlayer2 = false;
+
+    angle = map(random(0, 360), 0, 1023, 0, 179);
+    Serial.println(angle);
+    myServo.write((angle * 4) % 360);
     
     delay(delayTime);
   
